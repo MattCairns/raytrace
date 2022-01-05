@@ -1,6 +1,6 @@
-use std::io::Write;
-use std::{cmp, fmt, fs, ops};
+use std::{cmp, fs, io::Write, ops};
 
+#[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -41,16 +41,6 @@ impl Vec3Properties for Vec3 {
     }
 }
 
-impl fmt::Debug for Vec3 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Vec3")
-            .field("x", &self.x)
-            .field("y", &self.y)
-            .field("z", &self.z)
-            .finish()
-    }
-}
-
 impl ops::Neg for Vec3 {
     type Output = Vec3;
     fn neg(self) -> Vec3 {
@@ -69,6 +59,17 @@ impl ops::Add for Vec3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
+        }
+    }
+}
+
+impl ops::Sub for Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
         }
     }
 }
