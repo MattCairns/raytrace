@@ -3,6 +3,7 @@ use raytrace::vec3::*;
 use std::io::Write;
 
 fn ray_color(r: &Ray) -> Vec3 {
+    println!("{:?}", r.direction);
     let unit_dir = r.direction.unit();
     let t = 0.5 * (unit_dir.y + 1.0);
     Vec3 {
@@ -11,15 +12,15 @@ fn ray_color(r: &Ray) -> Vec3 {
         z: 1.0,
     } * (1.0 - t)
         + Vec3 {
-            x: 1.0,
-            y: 0.0,
-            z: 0.0,
+            x: 0.5,
+            y: 0.7,
+            z: 1.0,
         } * t
 }
 
 fn main() {
     let ratio = 16.0 / 9.0;
-    let width = 600 as u32;
+    let width = 400 as u32;
     let height = (width as f32 / ratio) as u32;
 
     let viewport_height = 2.0;
@@ -59,8 +60,8 @@ fn main() {
     for j in (0..height).rev() {
         // println!("\rRendering: {}/{}", j, height);
         for i in 0..width {
-            let u = (i / (width - 1)) as f64;
-            let v = (j / (height - 1)) as f64;
+            let u = (i as f32 / (width as f32 - 1.0)) as f64;
+            let v = (j as f32 / (height as f32 - 1.0)) as f64;
             let r = Ray {
                 origin: orig,
                 direction: lower_left_corner + horiz * u + vert * v + orig,
