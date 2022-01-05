@@ -1,34 +1,36 @@
-use std::{cmp, fs, io::Write, ops};
+use std::{fs, io::Write, ops};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
-pub trait Vec3Properties {
-    fn len(&self) -> f64;
-    fn len_sqr(&self) -> f64;
-    fn dot(&self, v: &Vec3) -> f64;
-    fn cross(&self, v: &Vec3) -> Vec3;
-    fn unit(&self) -> Vec3;
-}
-
-impl Vec3Properties for Vec3 {
-    fn len(&self) -> f64 {
+impl Vec3 {
+    pub const ZEROES: Vec3 = Vec3 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
+    pub const ONES: Vec3 = Vec3 {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+    };
+    pub fn len(&self) -> f64 {
         self.len_sqr().sqrt()
     }
 
-    fn len_sqr(&self) -> f64 {
+    pub fn len_sqr(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    fn dot(&self, v: &Vec3) -> f64 {
+    pub fn dot(&self, v: &Vec3) -> f64 {
         self.x * v.x + self.y * v.y + self.z * v.x
     }
 
-    fn cross(&self, v: &Vec3) -> Vec3 {
+    pub fn cross(&self, v: &Vec3) -> Vec3 {
         Vec3 {
             x: self.y * v.z - self.z * v.y,
             y: self.z * v.x - self.x * v.z,
@@ -36,7 +38,7 @@ impl Vec3Properties for Vec3 {
         }
     }
 
-    fn unit(&self) -> Vec3 {
+    pub fn unit(&self) -> Vec3 {
         self / self.len()
     }
 }
@@ -115,12 +117,6 @@ impl ops::Div<f64> for &Vec3 {
             y: self.y / rhs,
             z: self.z / rhs,
         }
-    }
-}
-
-impl cmp::PartialEq for Vec3 {
-    fn eq(&self, rhs: &Self) -> bool {
-        self.x == rhs.x && self.y == rhs.y && self.z == rhs.z
     }
 }
 
