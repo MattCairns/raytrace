@@ -1,36 +1,38 @@
+use raytrace::interactable::{HitRecord, HittableList, Sphere};
 use raytrace::ray::Ray;
 use raytrace::vec3::{write_color, Vec3};
 use std::io::Write;
 
-fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.origin - *center;
-    let a = r.direction.dot(&r.direction);
-    let b = 2.0 * oc.dot(&r.direction);
-    let c = oc.dot(&oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    if discriminant < 0.0 {
-        -1.0
+fn ray_color(r: &Ray, world: &HittableList) -> Vec3 {
+    // let hit = hit_sphere(&Vec3::new(0.0, 0.0, -2.0), 0.5, r);
+    //
+    let (hit, rec) = world.hit(r, 0.0, 9999999999999999.0);
+    if hit {
+        (rec.norm + Vec3::new(1.0, 1.0, 1.0)) * 0.5
     } else {
-        (-b - discriminant.sqrt()) / (2.0 * a)
+        let unit_dir = r.direction.unit();
+        let t = 0.5 * (unit_dir.y + 1.0);
+        Vec3::ONES * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
     }
-}
-
-fn ray_color(r: &Ray) -> Vec3 {
-    let hit = hit_sphere(&Vec3::new(0.0, 0.0, -2.0), 0.5, r);
-
-    if hit > 0.0 {
-        let n = (r.at(hit) - Vec3::new(0.0, 0.0, -1.0)).unit();
-        return (n + Vec3::ONES) * 0.5;
-    }
-    let unit_dir = r.direction.unit();
-    let t = 0.5 * (unit_dir.y + 1.0);
-    Vec3::ONES * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
 }
 
 fn main() {
     let ratio = 16.0 / 9.0;
-    let width = 400 as u32;
+    let width = 1000 as u32;
     let height = (width as f32 / ratio) as u32;
+
+    let mut world = HittableList::default();
+    let s1 = Sphere {
+        center: Vec3::new(0.0, 0.0, -1.0),
+        radius: 0.5,
+    };
+    println!("{:?}", s1);
+    let s2 = Sphere {
+        center: Vec3::new(0.0, -100.0, -5.0),
+        radius: 100.0,
+    };
+    world.hittables.push(s1);
+    world.hittables.push(s2);
 
     let viewport_height = 2.0;
     let viewport_width = ratio * viewport_height;
@@ -57,7 +59,7 @@ fn main() {
                 direction: lower_left_corner + horiz * u + vert * v + orig,
             };
 
-            let pixel_color = ray_color(&r);
+            let pixel_color = ray_color(&r, &world);
 
             write_color(&img, pixel_color);
         }
