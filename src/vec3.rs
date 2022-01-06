@@ -137,115 +137,50 @@ mod tests {
 
     #[test]
     fn len_sqr_is_correct() {
-        let v = Vec3 {
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-        };
+        let v = Vec3::new(1.0, 1.0, 1.0);
         assert_eq!(v.len_sqr(), 3.0);
     }
 
     #[test]
     fn len_is_correct() {
-        let v = Vec3 {
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-        };
+        let v = Vec3::new(1.0, 1.0, 1.0);
         let val = 3.0 as f64;
         assert_eq!(v.len(), val.sqrt());
     }
 
     #[test]
     fn dot() {
-        let a = Vec3 {
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-        };
-        let b = Vec3 {
-            x: 2.0,
-            y: 2.0,
-            z: 2.0,
-        };
+        let a = Vec3::new(1.0, 1.0, 1.0);
+        let b = Vec3::new(2.0, 2.0, 2.0);
 
         assert_eq!(a.dot(&b), 6.0);
     }
 
     #[test]
     fn cross() {
-        let a = Vec3 {
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-        };
-        let b = Vec3 {
-            x: 2.0,
-            y: 2.0,
-            z: 2.0,
-        };
-        let result = Vec3 {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-        };
+        let a = Vec3::new(1.0, 1.0, 1.0);
+        let b = Vec3::new(2.0, 2.0, 2.0);
+        let result = Vec3::new(0.0, 0.0, 0.0);
         assert_eq!(a.cross(&b), result);
     }
 
     #[test]
     fn unit() {
-        let v = Vec3 {
-            x: 4.0,
-            y: 4.0,
-            z: 4.0,
-        };
-        let result = Vec3 {
-            x: v.x / v.len(),
-            y: v.y / v.len(),
-            z: v.z / v.len(),
-        };
+        let v = Vec3::new(4.0, 4.0, 4.0);
+        let result = Vec3::new(v.x / v.len(), v.y / v.len(), v.z / v.len());
         assert_eq!(v.unit(), result);
     }
 
     #[test]
     fn add() {
-        let a = Vec3 {
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-        };
-
-        let b = Vec3 {
-            x: 4.0,
-            y: 4.0,
-            z: 4.0,
-        };
-
-        assert_eq!(
-            a + b,
-            Vec3 {
-                x: 5.0,
-                y: 5.0,
-                z: 5.0
-            }
-        );
+        let a = Vec3::new(1.0, 1.0, 1.0);
+        let b = Vec3::new(4.0, 4.0, 4.0);
+        assert_eq!(a + b, Vec3::new(5.0, 5.0, 5.0));
     }
 
     #[test]
     fn div() {
-        let a = Vec3 {
-            x: 4.0,
-            y: 4.0,
-            z: 4.0,
-        };
-
-        assert_eq!(
-            a / 2.0,
-            Vec3 {
-                x: 2.0,
-                y: 2.0,
-                z: 2.0
-            }
-        );
+        let a = Vec3::new(4.0, 4.0, 4.0);
+        assert_eq!(a / 2.0, Vec3::new(2.0, 2.0, 2.0));
     }
 }
