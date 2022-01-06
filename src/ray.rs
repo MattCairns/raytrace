@@ -4,12 +4,8 @@ pub struct Ray {
     pub direction: Vec3,
 }
 
-pub trait RayProperties {
-    fn at(&self, t: f64) -> Vec3;
-}
-
-impl RayProperties for Ray {
-    fn at(&self, t: f64) -> Vec3 {
+impl Ray {
+    pub fn at(&self, t: f64) -> Vec3 {
         self.origin + self.direction * t
     }
 }
