@@ -16,34 +16,15 @@ fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
 }
 
 fn ray_color(r: &Ray) -> Vec3 {
-    let hit = hit_sphere(
-        &Vec3 {
-            x: 0.0,
-            y: 0.0,
-            z: -2.0,
-        },
-        0.5,
-        r,
-    );
+    let hit = hit_sphere(&Vec3::new(0.0, 0.0, -2.0), 0.5, r);
 
     if hit > 0.0 {
-        let n = (r.at(hit)
-            - Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: -1.0,
-            })
-        .unit();
+        let n = (r.at(hit) - Vec3::new(0.0, 0.0, -1.0)).unit();
         return (n + Vec3::ONES) * 0.5;
     }
     let unit_dir = r.direction.unit();
     let t = 0.5 * (unit_dir.y + 1.0);
-    Vec3::ONES * (1.0 - t)
-        + Vec3 {
-            x: 0.5,
-            y: 0.7,
-            z: 1.0,
-        } * t
+    Vec3::ONES * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
 }
 
 fn main() {
@@ -56,25 +37,10 @@ fn main() {
     let focal_len = 1.0;
 
     let orig = Vec3::ZEROES;
-    let horiz = Vec3 {
-        x: viewport_width as f64,
-        y: 0.0,
-        z: 0.0,
-    };
-    let vert = Vec3 {
-        x: 0.0,
-        y: viewport_height as f64,
-        z: 0.0,
-    };
+    let horiz = Vec3::new(viewport_width as f64, 0.0, 0.0);
+    let vert = Vec3::new(0.0, viewport_height as f64, 0.0);
 
-    let lower_left_corner = orig
-        - horiz / 2.0
-        - vert / 2.0
-        - Vec3 {
-            x: 0.0,
-            y: 0.0,
-            z: focal_len,
-        };
+    let lower_left_corner = orig - horiz / 2.0 - vert / 2.0 - Vec3::new(0.0, 0.0, focal_len);
 
     let mut img = std::fs::File::create("test.ppm").expect("Failed to create image");
 

@@ -1,6 +1,6 @@
 use std::{fs, io::Write, ops};
 
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Default)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -8,6 +8,9 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { x, y, z }
+    }
     pub const ZEROES: Vec3 = Vec3 {
         x: 0.0,
         y: 0.0,
