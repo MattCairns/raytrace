@@ -6,7 +6,7 @@ use raytrace::vec3::Vec3;
 use std::io::Write;
 
 fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
-    let (hit, rec) = world.hit(r, 0.0, 9999999999999999.0);
+    let (hit, rec) = world.hit(r, 0.001, 9999999999999999.0);
     if depth <= 0 {
         Vec3::ZEROES
     } else if hit {
@@ -27,12 +27,12 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
 }
 
 fn main() {
-    let screen = Screen::new(16.0 / 9.0, 1920);
+    let screen = Screen::new(16.0 / 9.0, 400);
     let samples = 100;
     let max_depth = 50;
     let mut world = HittableList::default();
     let s1 = Sphere {
-        center: Vec3::new(0.0, 0.0, -1.0),
+        center: Vec3::new(0.0, 0.0, -2.0),
         radius: 0.5,
     };
 
