@@ -158,9 +158,9 @@ mod tests {
 
     #[test]
     fn cross() {
-        let a = Vec3::new(1.0, 1.0, 1.0);
-        let b = Vec3::new(2.0, 2.0, 2.0);
-        let result = Vec3::new(0.0, 0.0, 0.0);
+        let a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(10.0, 10.0, 10.0);
+        let result = Vec3::new(-10.0, 20.0, -10.0);
         assert_eq!(a.cross(&b), result);
     }
 
@@ -176,6 +176,31 @@ mod tests {
         let a = Vec3::new(1.0, 1.0, 1.0);
         let b = Vec3::new(4.0, 4.0, 4.0);
         assert_eq!(a + b, Vec3::new(5.0, 5.0, 5.0));
+    }
+
+    #[test]
+    fn mul_scalar() {
+        let a = Vec3::new(1.0, 1.0, 2.0);
+        assert_eq!(a * 0.5, Vec3::new(0.5, 0.5, 1.0));
+    }
+
+    #[test]
+    fn mul_vec3() {
+        let a = Vec3::new(1.0, 1.0, 2.0);
+        let b = Vec3::new(4.0, 4.0, 4.0);
+        assert_eq!(a * b, Vec3::new(4.0, 4.0, 8.0));
+    }
+
+    #[test]
+    fn div_scalar() {
+        let a = Vec3::new(1.0, 1.0, 2.0);
+        assert_eq!(a / 2.0, Vec3::new(0.5, 0.5, 1.0));
+    }
+
+    #[test]
+    fn div_scalar_ref() {
+        let a = Vec3::new(2.0, 2.0, 2.0);
+        assert_eq!(&a / 2.0, Vec3::new(1.0, 1.0, 1.0));
     }
 
     #[test]
