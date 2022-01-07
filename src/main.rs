@@ -4,8 +4,6 @@ use raytrace::vec3::{write_color, Vec3};
 use std::io::Write;
 
 fn ray_color(r: &Ray, world: &HittableList) -> Vec3 {
-    // let hit = hit_sphere(&Vec3::new(0.0, 0.0, -2.0), 0.5, r);
-    //
     let (hit, rec) = world.hit(r, 0.0, 9999999999999999.0);
     if hit {
         (rec.norm + Vec3::new(1.0, 1.0, 1.0)) * 0.5
@@ -18,19 +16,19 @@ fn ray_color(r: &Ray, world: &HittableList) -> Vec3 {
 
 fn main() {
     let ratio = 16.0 / 9.0;
-    let width = 1000 as u32;
+    let width = 400 as u32;
     let height = (width as f32 / ratio) as u32;
 
     let mut world = HittableList::default();
-    /* let s1 = Sphere {
+    let s1 = Sphere {
         center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
-    }; */
+    };
     let s2 = Sphere {
-        center: Vec3::new(0.0, -100.0, -2.0),
+        center: Vec3::new(0.0, -100.0, -1.0),
         radius: 100.0,
     };
-    // world.hittables.push(s1);
+    world.hittables.push(s1);
     world.hittables.push(s2);
 
     let viewport_height = 2.0;
@@ -50,10 +48,10 @@ fn main() {
         .expect("write failed");
 
     for j in (0..height).rev() {
-        // println!("\rRendering: {}/{}", j, height);
+        println!("\rRendering: {}/{}", j, height);
         for i in 0..width {
-            let u = (i as f32 / (width as f32 - 1.0)) as f64;
-            let v = (j as f32 / (height as f32 - 1.0)) as f64;
+            let u = (i as f64 / (width as f64 - 1.0)) as f64;
+            let v = (j as f64 / (height as f64 - 1.0)) as f64;
             let r = Ray {
                 origin: orig,
                 direction: lower_left_corner + (horiz * u) + (vert * v),
