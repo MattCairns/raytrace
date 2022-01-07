@@ -22,20 +22,20 @@ fn main() {
     let height = (width as f32 / ratio) as u32;
 
     let mut world = HittableList::default();
-    let s1 = Sphere {
+    /* let s1 = Sphere {
         center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
-    };
-    println!("{:?}", s1);
+    }; */
     let s2 = Sphere {
-        center: Vec3::new(0.0, -100.0, -5.0),
+        center: Vec3::new(0.0, -100.0, -2.0),
         radius: 100.0,
     };
-    world.hittables.push(s1);
+    // world.hittables.push(s1);
     world.hittables.push(s2);
 
     let viewport_height = 2.0;
     let viewport_width = ratio * viewport_height;
+    println!("{}", viewport_width);
     let focal_len = 1.0;
 
     let orig = Vec3::ZEROES;
@@ -56,7 +56,7 @@ fn main() {
             let v = (j as f32 / (height as f32 - 1.0)) as f64;
             let r = Ray {
                 origin: orig,
-                direction: lower_left_corner + horiz * u + vert * v + orig,
+                direction: lower_left_corner + (horiz * u) + (vert * v),
             };
 
             let pixel_color = ray_color(&r, &world);
