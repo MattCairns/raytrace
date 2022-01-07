@@ -1,4 +1,5 @@
-use std::{fs, io::Write, ops};
+use rand::prelude::*;
+use std::ops;
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Default)]
 pub struct Vec3 {
@@ -21,6 +22,26 @@ impl Vec3 {
         y: 1.0,
         z: 1.0,
     };
+
+    pub fn rand() -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3 {
+            x: rng.gen(),
+            y: rng.gen(),
+            z: rng.gen(),
+        }
+    }
+
+    pub fn rand_range(min: f64, max: f64) -> Vec3 {
+        let mut rng = rand::thread_rng();
+
+        Vec3 {
+            x: rng.gen_range(min..max),
+            y: rng.gen_range(min..max),
+            z: rng.gen_range(min..max),
+        }
+    }
+
     pub fn len(&self) -> f64 {
         self.len_sqr().sqrt()
     }
@@ -121,14 +142,6 @@ impl ops::Div<f64> for &Vec3 {
             z: self.z / rhs,
         }
     }
-}
-
-pub fn write_color(mut file: &fs::File, color: Vec3) {
-    let r = (255.999 * color.x) as u8;
-    let g = (255.999 * color.y) as u8;
-    let b = (255.999 * color.z) as u8;
-    file.write_fmt(format_args!("{} {} {}\n", r, g, b))
-        .expect("Write failed");
 }
 
 #[cfg(test)]
