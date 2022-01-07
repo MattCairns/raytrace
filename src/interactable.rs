@@ -52,21 +52,22 @@ pub struct Sphere {
 impl Sphere {
     pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord) {
         let oc = r.origin - self.center;
-        let a = r.direction.dot(&r.direction);
-        let b = 2.0 * oc.dot(&r.direction);
-        let c = oc.dot(&oc) - self.radius * self.radius;
+        let a = r.direction.len_sqr();
+        let b = oc.dot(&r.direction);
+        let c = oc.len_sqr() - self.radius * self.radius;
 
-        let discriminant = b * b - 4.0 * a * c;
-        let roota = (-b - discriminant.sqrt()) / a;
-        let rootb = (-b + discriminant.sqrt()) / a;
+        let discriminant = b * b - a * c;
+        let sqrtd = discriminant.sqrt();
+        let roota = (-b - sqrtd) / a;
+        let rootb = (-b + sqrtd) / a;
 
         let mut rec = HitRecord::default();
         if discriminant < 0.0 {
             (false, rec)
-        } else if rootb < t_min || rootb >= t_max {
+        } else if rootb < t_min || t_max < rootb {
             (false, rec)
         } else {
-            if roota < t_min || roota >= t_max {
+            if roota < t_min || t_max < roota {
                 rec.t = roota;
             } else {
                 rec.t = rootb
@@ -74,7 +75,7 @@ impl Sphere {
             rec.p = r.at(rec.t);
             let outward_norm = (rec.p - self.center) / self.radius;
             rec.set_face_normal(r, &outward_norm);
-            rec.norm = (rec.p - self.center) / self.radius;
+
             (true, rec)
         }
     }
