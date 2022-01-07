@@ -1,5 +1,6 @@
 use raytrace::interactable::{HitRecord, HittableList, Sphere};
 use raytrace::ray::Ray;
+use raytrace::scene::{Screen, ViewPort};
 use raytrace::vec3::{write_color, Vec3};
 use std::io::Write;
 
@@ -15,9 +16,7 @@ fn ray_color(r: &Ray, world: &HittableList) -> Vec3 {
 }
 
 fn main() {
-    let ratio = 16.0 / 9.0;
-    let width = 400 as u32;
-    let height = (width as f32 / ratio) as u32;
+    let screen = Screen::new(16.0 / 9.0, 400);
 
     let mut world = HittableList::default();
     let s1 = Sphere {
@@ -31,30 +30,33 @@ fn main() {
     world.hittables.push(s1);
     world.hittables.push(s2);
 
-    let viewport_height = 2.0;
-    let viewport_width = ratio * viewport_height;
-    println!("{}", viewport_width);
-    let focal_len = 1.0;
+    let viewport = {
+        let viewport_height = 2.0;
+        ViewPort::new(viewport_height, screen.aspect_ratio * viewport_height, 1.0)
+    };
 
-    let orig = Vec3::ZEROES;
-    let horiz = Vec3::new(viewport_width as f64, 0.0, 0.0);
-    let vert = Vec3::new(0.0, viewport_height as f64, 0.0);
-
-    let lower_left_corner = orig - horiz / 2.0 - vert / 2.0 - Vec3::new(0.0, 0.0, focal_len);
+    let origin = Vec3::ZEROES;
+    let horiz = Vec3::new(viewport.width, 0.0, 0.0);
+    let vert = Vec3::new(0.0, viewport.height, 0.0);
+    let lower_left_corner =
+        origin - horiz / 2.0 - vert / 2.0 - Vec3::new(0.0, 0.0, viewport.focal_length);
 
     let mut img = std::fs::File::create("test.ppm").expect("Failed to create image");
 
-    img.write_fmt(format_args!("P3\n{} {}\n255\n", width, height))
-        .expect("write failed");
+    img.write_fmt(format_args!(
+        "P3\n{} {}\n255\n",
+        screen.width, screen.height
+    ))
+    .expect("write failed");
 
-    for j in (0..height).rev() {
-        println!("\rRendering: {}/{}", j, height);
-        for i in 0..width {
-            let u = (i as f64 / (width as f64 - 1.0)) as f64;
-            let v = (j as f64 / (height as f64 - 1.0)) as f64;
+    for j in (0..screen.height).rev() {
+        println!("\rRendering: {}/{}", j, screen.height);
+        for i in 0..screen.width {
+            let u = i as f64 / (screen.width as f64 - 1.0);
+            let v = j as f64 / (screen.height as f64 - 1.0);
             let r = Ray {
-                origin: orig,
-                direction: lower_left_corner + (horiz * u) + (vert * v),
+                origin,
+                direction: lower_left_corner + (horiz * u) + (vert * v) - origin,
             };
 
             let pixel_color = ray_color(&r, &world);
