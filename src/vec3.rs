@@ -23,23 +23,15 @@ impl Vec3 {
         z: 1.0,
     };
 
-    pub fn rand() -> Vec3 {
-        let mut rng = rand::thread_rng();
-        Vec3 {
-            x: rng.gen(),
-            y: rng.gen(),
-            z: rng.gen(),
-        }
-    }
-
-    pub fn rand_range(min: f64, max: f64) -> Vec3 {
+    pub fn rand(min: f64, max: f64) -> Vec3 {
         let mut rng = rand::thread_rng();
 
-        Vec3 {
+        let r = Vec3 {
             x: rng.gen_range(min..max),
             y: rng.gen_range(min..max),
             z: rng.gen_range(min..max),
-        }
+        };
+        r
     }
 
     pub fn len(&self) -> f64 {
