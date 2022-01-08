@@ -7,20 +7,25 @@ pub struct HittableList {
 }
 
 impl HittableList {
-    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord) {
+    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let mut hit_anything = false;
         let mut closest_so_far = t_max;
         let mut rec = HitRecord::default();
 
         for ob in &self.hittables {
-            let (hit, temp_rec) = ob.hit(r, t_min, closest_so_far);
-            if hit {
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec = temp_rec;
+            match ob.hit(r, t_min, closest_so_far) {
+                Some(hit) => {
+                    hit_anything = true;
+                    closest_so_far = hit.t;
+                    rec = hit;
+                }
+                None => {}
             }
         }
-        (hit_anything, rec)
+        match hit_anything {
+            true => Some(rec),
+            false => None,
+        }
     }
 }
 
@@ -50,7 +55,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord) {
+    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = r.origin - self.center;
         let a = r.direction.len_sqr();
         let b = oc.dot(&r.direction);
@@ -63,9 +68,10 @@ impl Sphere {
 
         let mut rec = HitRecord::default();
         if discriminant < 0.0 {
-            (false, rec)
+            None
+            false => {}
         } else if rootb < t_min || t_max < rootb {
-            (false, rec)
+            None
         } else {
             if roota < t_min || t_max < roota {
                 rec.t = roota;
@@ -76,7 +82,7 @@ impl Sphere {
             let outward_norm = (rec.p - self.center) / self.radius;
             rec.set_face_normal(r, &outward_norm);
 
-            (true, rec)
+            Some(rec)
         }
     }
 }

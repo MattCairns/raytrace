@@ -1,28 +1,32 @@
 use raytrace::interactable::{HittableList, Sphere};
 use raytrace::ray::Ray;
 use raytrace::scene::{Camera, Screen};
-use raytrace::util::write_color;
+use raytrace::util::{rand_unit_vec3, write_color};
 use raytrace::vec3::Vec3;
 use std::io::Write;
 
 fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
-    let (hit, rec) = world.hit(r, 0.001, 9999999999999999.0);
     if depth <= 0 {
         Vec3::ZEROES
-    } else if hit {
-        let target = rec.p + rec.norm + Vec3::rand_range(-1.0, 1.0);
-        ray_color(
-            &Ray {
-                origin: rec.p,
-                direction: target - rec.p,
-            },
-            world,
-            depth - 1,
-        ) * 0.5
     } else {
-        let unit_dir = r.direction.unit();
-        let t = 0.5 * (unit_dir.y + 1.0);
-        Vec3::ONES * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
+        match world.hit(r, 0.001, 9999999999999999.0) {
+            Some(hit) => {
+                let target = hit.p + hit.norm + rand_unit_vec3();
+                ray_color(
+                    &Ray {
+                        origin: hit.p,
+                        direction: target - hit.p,
+                    },
+                    world,
+                    depth - 1,
+                ) * 0.5
+            }
+            None => {
+                let unit_dir = r.direction.unit();
+                let t = 0.5 * (unit_dir.y + 1.0);
+                Vec3::ONES * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
+            }
+        }
     }
 }
 
@@ -32,7 +36,7 @@ fn main() {
     let max_depth = 50;
     let mut world = HittableList::default();
     let s1 = Sphere {
-        center: Vec3::new(0.0, 0.0, -2.0),
+        center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
     };
 
@@ -58,8 +62,8 @@ fn main() {
 
     for j in (0..screen.height).rev() {
         println!(
-            "\rRendering...  {}",
-            (1.0 - (j as f64 / screen.height as f64)) * 100.0
+            "\rRendering...  {}%",
+            ((1.0 - (j as f64 / screen.height as f64)) * 100.0) as u8
         );
         for i in 0..screen.width {
             let mut pixel_color = Vec3::ZEROES;
