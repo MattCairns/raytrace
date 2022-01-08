@@ -69,7 +69,6 @@ impl Sphere {
         let mut rec = HitRecord::default();
         if discriminant < 0.0 {
             None
-            false => {}
         } else if rootb < t_min || t_max < rootb {
             None
         } else {
