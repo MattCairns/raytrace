@@ -37,17 +37,6 @@ pub struct HitRecord {
     pub front_face: bool,
 }
 
-impl HitRecord {
-    pub fn set_face_normal(&mut self, r: &Ray, outward_norm: &Vec3) {
-        self.front_face = r.direction.dot(outward_norm) < 0.0;
-        if self.front_face {
-            self.norm = *outward_norm
-        } else {
-            self.norm = -*outward_norm
-        };
-    }
-}
-
 #[derive(Debug, Clone, Default)]
 pub struct Sphere {
     pub center: Vec3,
@@ -62,26 +51,27 @@ impl Sphere {
         let c = oc.len_sqr() - self.radius * self.radius;
 
         let discriminant = b * b - a * c;
-        let sqrtd = discriminant.sqrt();
-        let roota = (-b - sqrtd) / a;
-        let rootb = (-b + sqrtd) / a;
 
-        let mut rec = HitRecord::default();
-        if discriminant < 0.0 {
-            None
-        } else if rootb < t_min || t_max < rootb {
-            None
-        } else {
-            if roota < t_min || t_max < roota {
-                rec.t = roota;
-            } else {
-                rec.t = rootb
+        if discriminant >= 0.0 {
+            let sqrtd = discriminant.sqrt();
+            let roota = (-b - sqrtd) / a;
+            let rootb = (-b + sqrtd) / a;
+
+            for root in [roota, rootb].iter() {
+                if *root < t_max && *root > t_min {
+                    let t = *root;
+                    let p = r.at(*root);
+                    let norm = (p - self.center) / self.radius;
+                    let front_face = r.direction.dot(&norm) < 0.0;
+                    return Some(HitRecord {
+                        t,
+                        p,
+                        norm: if front_face { norm } else { -norm },
+                        front_face,
+                    });
+                }
             }
-            rec.p = r.at(rec.t);
-            let outward_norm = (rec.p - self.center) / self.radius;
-            rec.set_face_normal(r, &outward_norm);
-
-            Some(rec)
         }
+        None
     }
 }
