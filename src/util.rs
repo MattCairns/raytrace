@@ -1,5 +1,7 @@
 use crate::vec3::Vec3;
+use rand::prelude::*;
 use std::{fs, io::Write};
+
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
     if x < min {
         min
@@ -21,6 +23,11 @@ pub fn rand_vec3_in_sphere() -> Vec3 {
         }
     }
     p
+}
+
+pub fn rand_f64() -> f64 {
+    let mut rng = rand::thread_rng();
+    rng.gen()
 }
 
 pub fn rand_unit_vec3() -> Vec3 {
