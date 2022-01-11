@@ -224,7 +224,7 @@ mod tests {
     #[test]
     fn test_reflect() {
         let a = Vec3::new(4.0, 4.0, 4.0);
-        let b = Vec3::new(1.1, 1.1, 1.1);
-        assert_eq!(a.reflect(b), Vec3::ZEROES);
+        let b = Vec3::new(1.0, 1.0, 1.0);
+        assert_eq!(a.reflect(b), Vec3::new(-20.0, -20.0, -20.0));
     }
 }
