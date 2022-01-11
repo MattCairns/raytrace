@@ -1,41 +1,7 @@
+use crate::hittable::HitRecord;
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
-
-#[derive(Debug, Clone, Default)]
-pub struct HittableList {
-    pub hittables: Vec<Sphere>,
-}
-
-impl HittableList {
-    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let mut hit_anything = false;
-        let mut closest_so_far = t_max;
-        let mut rec = HitRecord::default();
-
-        for ob in &self.hittables {
-            match ob.hit(r, t_min, closest_so_far) {
-                Some(hit) => {
-                    hit_anything = true;
-                    closest_so_far = hit.t;
-                    rec = hit;
-                }
-                None => {}
-            }
-        }
-        match hit_anything {
-            true => Some(rec),
-            false => None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct HitRecord {
-    pub p: Vec3,
-    pub norm: Vec3,
-    pub t: f64,
-    pub front_face: bool,
-}
 
 #[derive(Debug, Clone, Default)]
 pub struct Sphere {
@@ -68,6 +34,7 @@ impl Sphere {
                         p,
                         norm: if front_face { norm } else { -norm },
                         front_face,
+                        mat: Material::Metal(),
                     });
                 }
             }

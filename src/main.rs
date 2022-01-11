@@ -1,6 +1,7 @@
-use raytrace::interactable::{HittableList, Sphere};
+use raytrace::hittable::HittableList;
 use raytrace::ray::Ray;
 use raytrace::scene::{Camera, Screen};
+use raytrace::sphere::Sphere;
 use raytrace::util::{rand_f64, rand_unit_vec3, write_color};
 use raytrace::vec3::Vec3;
 use std::io::Write;
@@ -31,7 +32,7 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
 }
 
 fn main() {
-    let screen = Screen::new(16.0 / 9.0, 1000);
+    let screen = Screen::new(16.0 / 9.0, 200);
     let samples = 100;
     let max_depth = 50;
     let mut world = HittableList::default();

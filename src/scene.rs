@@ -16,6 +16,7 @@ impl Screen {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct Camera {
     pub height: f64,
     pub width: f64,
