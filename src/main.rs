@@ -16,8 +16,9 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
             Some(hit) => {
                 let scattered = Ray::default();
                 let attenuation = Vec3::ZEROES;
-                // let target = hit.p + hit.norm + rand_unit_vec3();
-                hit.mat.scatter(r, hit, attenuation, scattered);
+                let target = hit.p + hit.norm + rand_unit_vec3();
+                /* hit.mat.
+                hit.mat.scatter(r, hit, attenuation); */
                 ray_color(
                     &Ray {
                         origin: hit.p,
@@ -40,7 +41,7 @@ fn main() {
     let screen = Screen::new(16.0 / 9.0, 200);
     let samples = 100;
     let max_depth = 50;
-    let mut world = HittableList::default();
+    let mut world = HittableList { hittables: vec![] };
     let s1 = Sphere {
         center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
