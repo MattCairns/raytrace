@@ -1,9 +1,9 @@
-use crate::material::Material;
+use crate::material::{Material, Metal};
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::Vec3;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug)]
 pub struct HittableList {
     pub hittables: Vec<Sphere>,
 }
@@ -17,7 +17,9 @@ impl HittableList {
             norm: Vec3::ZEROES,
             t: 0.0,
             front_face: true,
-            mat: Material::Metal(g),
+            mat: Material::Metal(Metal {
+                albedo: Vec3::ZEROES,
+            }),
         };
 
         for ob in &self.hittables {

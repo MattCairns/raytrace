@@ -1,4 +1,6 @@
 use raytrace::hittable::HittableList;
+use raytrace::material::Material;
+use raytrace::material::Metal;
 use raytrace::ray::Ray;
 use raytrace::scene::{Camera, Screen};
 use raytrace::sphere::Sphere;
@@ -12,7 +14,10 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
     } else {
         match world.hit(r, 0.001, f64::INFINITY) {
             Some(hit) => {
-                let target = hit.p + hit.norm + rand_unit_vec3();
+                let scattered = Ray::default();
+                let attenuation = Vec3::ZEROES;
+                // let target = hit.p + hit.norm + rand_unit_vec3();
+                hit.mat.scatter(r, hit, attenuation, scattered);
                 ray_color(
                     &Ray {
                         origin: hit.p,
@@ -39,16 +44,25 @@ fn main() {
     let s1 = Sphere {
         center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
+        mat: Material::Metal(Metal {
+            albedo: Vec3::ZEROES,
+        }),
     };
 
     let s2 = Sphere {
         center: Vec3::new(0.75, -0.25, -1.2),
         radius: 0.25,
+        mat: Material::Metal(Metal {
+            albedo: Vec3::ZEROES,
+        }),
     };
 
     let ground = Sphere {
         center: Vec3::new(0.0, -100.5, -1.0),
         radius: 100.0,
+        mat: Material::Metal(Metal {
+            albedo: Vec3::ZEROES,
+        }),
     };
     world.hittables.push(s1);
     world.hittables.push(s2);

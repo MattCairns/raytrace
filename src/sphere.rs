@@ -3,10 +3,11 @@ use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f64,
+    pub mat: Material,
 }
 
 impl Sphere {
@@ -30,11 +31,11 @@ impl Sphere {
                     let norm = (p - self.center) / self.radius;
                     let front_face = r.direction.dot(&norm) < 0.0;
                     return Some(HitRecord {
-                        t,
                         p,
                         norm: if front_face { norm } else { -norm },
+                        t,
                         front_face,
-                        mat: Material::Metal(),
+                        mat: self.mat,
                     });
                 }
             }

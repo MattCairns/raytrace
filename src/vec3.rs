@@ -57,6 +57,10 @@ impl Vec3 {
     pub fn unit(&self) -> Vec3 {
         self / self.len()
     }
+
+    pub fn reflect(&self, n: Vec3) -> Vec3 {
+        *self - n * self.dot(&n) * 2.0
+    }
 }
 
 impl ops::Neg for Vec3 {
@@ -215,5 +219,12 @@ mod tests {
     fn div() {
         let a = Vec3::new(4.0, 4.0, 4.0);
         assert_eq!(a / 2.0, Vec3::new(2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn test_reflect() {
+        let a = Vec3::new(4.0, 4.0, 4.0);
+        let b = Vec3::new(1.1, 1.1, 1.1);
+        assert_eq!(a.reflect(b), Vec3::ZEROES);
     }
 }
