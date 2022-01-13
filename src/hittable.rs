@@ -19,6 +19,7 @@ impl HittableList {
             front_face: true,
             mat: Material::Metal(Metal {
                 albedo: Vec3::ZEROES,
+                blur: 0.0,
             }),
         };
 
