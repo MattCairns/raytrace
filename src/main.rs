@@ -1,3 +1,5 @@
+use image::imageops::rotate180;
+use image::{ImageBuffer, RgbImage};
 use raytrace::hittable::HittableList;
 use raytrace::material::Material;
 use raytrace::material::Metal;
@@ -8,7 +10,6 @@ use raytrace::sphere::Sphere;
 use raytrace::util::rand_f64;
 use raytrace::util::write_color;
 use raytrace::vec3::Vec3;
-use std::io::Write;
 
 fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
     if depth <= 0 {
@@ -34,7 +35,7 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
 }
 
 fn main() {
-    let screen = Screen::new(16.0 / 9.0, 400);
+    let screen = Screen::new(16.0 / 9.0, 200);
     let samples = 100;
     let max_depth = 50;
     let mut world = HittableList { hittables: vec![] };
@@ -74,13 +75,8 @@ fn main() {
         Camera::new(viewport_height, screen.aspect_ratio * viewport_height, 1.0)
     };
 
-    let mut img = std::fs::File::create("test.ppm").expect("Failed to create image");
-
-    img.write_fmt(format_args!(
-        "P3\n{} {}\n255\n",
-        screen.width, screen.height
-    ))
-    .expect("write failed");
+    // let mut img = std::fs::File::create("test.ppm").expect("Failed to create image");
+    let mut img: RgbImage = ImageBuffer::new(screen.width, screen.height);
 
     for j in (0..screen.height).rev() {
         println!(
@@ -97,7 +93,8 @@ fn main() {
                 pixel_color = pixel_color + ray_color(&r, &world, max_depth);
             }
 
-            write_color(&img, pixel_color, samples);
+            write_color(&mut img, i, j, pixel_color, samples);
         }
     }
+    rotate180(&img).save("test.png").unwrap();
 }
