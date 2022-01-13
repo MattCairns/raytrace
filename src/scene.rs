@@ -2,16 +2,16 @@ use crate::ray::Ray;
 use crate::vec3::Vec3;
 pub struct Screen {
     pub aspect_ratio: f64,
-    pub width: u16,
-    pub height: u16,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl Screen {
-    pub fn new(aspect_ratio: f64, width: u16) -> Self {
+    pub fn new(aspect_ratio: f64, width: u32) -> Self {
         Self {
             aspect_ratio,
             width,
-            height: (width as f64 / aspect_ratio) as u16,
+            height: (width as f64 / aspect_ratio) as u32,
         }
     }
 }
