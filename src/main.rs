@@ -1,4 +1,5 @@
 use raytrace::hittable::HittableList;
+use raytrace::material::Lambertian;
 use raytrace::material::Material;
 use raytrace::material::Metal;
 use raytrace::material::Scatterable;
@@ -34,39 +35,48 @@ fn ray_color(r: &Ray, world: &HittableList, depth: u16) -> Vec3 {
 }
 
 fn main() {
-    let screen = Screen::new(16.0 / 9.0, 400);
+    let screen = Screen::new(16.0 / 9.0, 1000);
     let samples = 100;
-    let max_depth = 50;
+    let max_depth = 10;
     let mut world = HittableList { hittables: vec![] };
-    let s1 = Sphere {
-        center: Vec3::new(0.0, 0.0, -1.0),
+    let left = Sphere {
+        center: Vec3::new(-1.0, 0.0, -1.0),
         radius: 0.5,
         mat: Material::Metal(Metal {
-            albedo: Vec3::new(0.8, 0.8, 0.2),
-            blur: 0.9,
+            albedo: Vec3::new(0.8, 0.8, 0.8),
+            blur: 0.3,
         }),
     };
 
-    let s2 = Sphere {
-        center: Vec3::new(0.75, -0.25, -1.2),
-        radius: 0.25,
+    let centre = Sphere {
+        center: Vec3::new(0.0, 0.0, -1.0),
+        radius: 0.5,
         mat: Material::Metal(Metal {
-            albedo: Vec3::new(0.8, 0.8, 0.8),
-            blur: 0.1,
+            albedo: Vec3::new(0.7, 0.3, 0.3),
+            blur: 0.0,
+        }),
+    };
+
+    let right = Sphere {
+        center: Vec3::new(1.0, 0.0, -1.0),
+        radius: 0.5,
+        mat: Material::Metal(Metal {
+            albedo: Vec3::new(0.8, 0.8, 0.2),
+            blur: 1.0,
         }),
     };
 
     let ground = Sphere {
         center: Vec3::new(0.0, -100.5, -1.0),
         radius: 100.0,
-        mat: Material::Metal(Metal {
-            albedo: Vec3::new(0.2, 0.8, 0.0),
-            blur: 0.3,
+        mat: Material::Lambertian(Lambertian {
+            albedo: Vec3::new(0.8, 0.8, 0.0),
         }),
     };
 
-    world.hittables.push(s1);
-    world.hittables.push(s2);
+    world.hittables.push(left);
+    world.hittables.push(centre);
+    world.hittables.push(right);
     world.hittables.push(ground);
 
     let cam = {
